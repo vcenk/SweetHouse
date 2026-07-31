@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { site } from "@/lib/site";
 import { Arrow, Star, MapPin } from "./icons";
 
@@ -13,6 +13,7 @@ const word = {
 };
 
 export default function Hero() {
+  const reduce = useReducedMotion();
   return (
     <section id="top" className="relative overflow-hidden pt-32 pb-16 sm:pt-40 lg:pt-44">
       {/* Warm ambient background */}
@@ -108,14 +109,48 @@ export default function Hero() {
         >
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md">
             <div className="absolute inset-0 rotate-3 rounded-[2.5rem] bg-gradient-to-br from-honey to-pistachio opacity-30 blur-sm" />
+
+            {/* Floating pistachios */}
+            {!reduce &&
+              [
+                { t: "6%", l: "18%", d: "0s", s: "text-3xl", r: "-18deg" },
+                { t: "82%", l: "10%", d: "1.2s", s: "text-2xl", r: "14deg" },
+                { t: "70%", l: "88%", d: "2.1s", s: "text-3xl", r: "-8deg" },
+                { t: "30%", l: "94%", d: "0.6s", s: "text-xl", r: "22deg" },
+              ].map((p, i) => (
+                <span
+                  key={i}
+                  className={`float pointer-events-none absolute z-20 ${p.s} drop-shadow-md`}
+                  style={{ top: p.t, left: p.l, animationDelay: p.d, ["--r" as string]: p.r }}
+                  aria-hidden="true"
+                >
+                  🥜
+                </span>
+              ))}
+
             <div className="relative h-full w-full overflow-hidden rounded-[2.5rem] border-[6px] border-sugar shadow-[0_40px_80px_-30px_rgba(42,22,12,0.6)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/hero-baklava.jpg"
-                alt="Fresh golden baklava topped with crushed pistachio"
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-espresso/30 via-transparent to-transparent" />
+              {reduce ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src="/images/hero-baklava.jpg"
+                  alt="Fresh golden baklava topped with crushed pistachio"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <video
+                  className="h-full w-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  poster="/images/hero-baklava.jpg"
+                  aria-label="Fresh baklava being prepared"
+                >
+                  <source src="/videos/hero-baklava.mp4" type="video/mp4" />
+                </video>
+              )}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-espresso/30 via-transparent to-transparent" />
             </div>
 
             {/* Floating badge — rating */}
